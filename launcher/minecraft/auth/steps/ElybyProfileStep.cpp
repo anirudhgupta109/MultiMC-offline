@@ -17,17 +17,13 @@ QString ElybyProfileStep::describe() {
 
 
 void ElybyProfileStep::perform() {
-    auto url = QUrl(QString("https://authserver.ely.by/api/users/profiles/minecraft/%1").arg(m_data->userName()).toUtf8());
+    auto url = QUrl(QString("https://authserver.ely.by/api/users/profiles/minecraft/%1").arg(m_data->yggdrasilToken.extra["userName"].toString()).toUtf8());
     QNetworkRequest request = QNetworkRequest(url);
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
 
     AuthRequest *requestor = new AuthRequest(this);
     connect(requestor, &AuthRequest::finished, this, &ElybyProfileStep::onRequestDone);
     requestor->get(request);
-}
-
-void ElybyProfileStep::rehydrate() {
-    // NOOP, for now. We only save bools and there's nothing to check.
 }
 
 void ElybyProfileStep::onRequestDone(

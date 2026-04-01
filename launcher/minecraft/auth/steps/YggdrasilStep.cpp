@@ -17,10 +17,6 @@ QString YggdrasilStep::describe() {
     return tr("Logging in with Mojang account.");
 }
 
-void YggdrasilStep::rehydrate() {
-    // NOOP, for now.
-}
-
 void YggdrasilStep::perform() {
     if(m_password.size()) {
         m_yggdrasil->login(m_password);

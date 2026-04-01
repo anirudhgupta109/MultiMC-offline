@@ -22,6 +22,8 @@
 #include <QJsonDocument>
 #include <QNetworkReply>
 #include <QByteArray>
+#include <QRegExp>
+#include <QUuid>
 
 #include <QDebug>
 
@@ -70,7 +72,7 @@ void Yggdrasil::refresh() {
      * }
      */
     QJsonObject req;
-    req.insert("clientToken", m_data->clientToken());
+    req.insert("clientToken", m_data->yggdrasilToken.extra["clientToken"].toString());
     req.insert("accessToken", m_data->accessToken());
     /*
     {
@@ -117,15 +119,17 @@ void Yggdrasil::login(QString password) {
         req.insert("agent", agent);
     }
 
-    req.insert("username", m_data->userName());
+    req.insert("username", m_data->yggdrasilToken.extra["userName"].toString());
     req.insert("password", password);
     req.insert("requestUser", false);
 
     // If we already have a client token, give it to the server.
     // Otherwise, let the server give us one.
 
-    m_data->generateClientTokenIfMissing();
-    req.insert("clientToken", m_data->clientToken());
+    if (m_data->yggdrasilToken.extra["clientToken"].toString().isEmpty()) {
+        m_data->yggdrasilToken.extra["clientToken"] = QUuid::createUuid().toString().remove(QRegExp("[{}-]"));
+    }
+    req.insert("clientToken", m_data->yggdrasilToken.extra["clientToken"].toString());
 
     QJsonDocument doc(req);
 
@@ -188,10 +192,10 @@ void Yggdrasil::processResponse(QJsonObject responseData) {
         changeState(AccountTaskState::STATE_FAILED_HARD, tr("Authentication server didn't send a client token."));
         return;
     }
-    if(m_data->clientToken().isEmpty()) {
-        m_data->setClientToken(clientToken);
+    if(m_data->yggdrasilToken.extra["clientToken"].toString().isEmpty()) {
+        m_data->yggdrasilToken.extra["clientToken"] = clientToken;
     }
-    else if(clientToken != m_data->clientToken()) {
+    else if(clientToken != m_data->yggdrasilToken.extra["clientToken"].toString()) {
         changeState(AccountTaskState::STATE_FAILED_HARD, tr("Authentication server attempted to change the client token. This isn't supported."));
         return;
     }

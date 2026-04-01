@@ -93,16 +93,17 @@ jobs:
            -DCMAKE_C_COMPILER=gcc ^
            -DCMAKE_CXX_COMPILER=g++ ^
            -DCMAKE_BUILD_TYPE=Release ^
-           -DLauncher_NOTIFICATION_URL:STRING=https://files.multimc.org/notifications.json ^
-           -DCMAKE_INSTALL_PREFIX:PATH="D:/UltimMC/UltimMC" ^
+           -DLauncher_APP_BINARY_NAME=MultiMC-Offline ^
+           -DLauncher_NOTIFICATION_URL:STRING=${{ github.server_url }}/${{ github.repository }}/raw/${{ github.sha }}/.github/assets/notifications.json ^
+           -DCMAKE_INSTALL_PREFIX:PATH="D:/MultiMC-Offline" ^
            -DCMAKE_PREFIX_PATH="D:\Qt\5.6.3\mingw49_32" ^
            -DQt5_DIR="D:\Qt\5.6.3\mingw49_32" ^
-           -DLauncher_UPDATER_BASE=https://files.multimc.org/update/ ^
+           -DLauncher_UPDATER_BASE=${{ github.server_url }}/${{ github.repository }}/raw/${{ github.sha }}/.github/assets/update/ ^
            -DLauncher_PASTE_EE_API_KEY:STRING=utLvciUouSURFzfjPxLBf5W4ISsUX4pwBDF7N1AfZ ^
            -DLauncher_ANALYTICS_ID:STRING=UA-87731965-2 ^
            -DLauncher_LAYOUT=win-bundle ^
            -DLauncher_BUILD_PLATFORM=win32 ^
-           -DLauncher_BUG_TRACKER_URL=https://github.com/UltimMC/Launcher/issues ^
+           -DLauncher_BUG_TRACKER_URL=https://github.com/${{ github.repository }}/issues ^
            -DLauncher_EMBED_SECRETS=On ^
            -G "MinGW Makefiles" ^
            ..
@@ -130,7 +131,7 @@ jobs:
           set PATH=C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;%PATH%
           cd build
           mingw32-make test
-          cmake -E remove_directory "D:/UltimMC/UltimMC"
+          cmake -E remove_directory "D:/MultiMC-Offline"
 
       - name: Install
         shell: cmd
@@ -147,11 +148,11 @@ jobs:
       - name: Copy OpenSSL
         shell: cmd
         run: |
-          cp OpenSSL/ssleay32.dll D:/UltimMC/UltimMC/ssleay32.dll
-          cp OpenSSL/libeay32.dll D:/UltimMC/UltimMC/libeay32.dll
+          cp OpenSSL/ssleay32.dll D:/MultiMC-Offline/ssleay32.dll
+          cp OpenSSL/libeay32.dll D:/MultiMC-Offline/libeay32.dll
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@main
         with:
-          name: mmc-cracked-win32
-          path: "D:/UltimMC"
+          name: multimc-offline-win32
+          path: "D:/MultiMC-Offline"

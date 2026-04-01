@@ -29,6 +29,7 @@
 #include "minecraft/launch/ScanModFolders.h"
 #include "minecraft/launch/InjectAuthlib.h"
 #include "minecraft/launch/VerifyJavaInstall.h"
+#include "minecraft/launch/ModMinecraftJar.h"
 
 #include "java/JavaUtils.h"
 
@@ -48,6 +49,7 @@
 #include "MinecraftUpdate.h"
 #include "MinecraftLoadAndCheck.h"
 #include "minecraft/gameoptions/GameOptions.h"
+#include "minecraft/auth/AccountList.h"
 #include "minecraft/update/FoldersTask.h"
 #include "minecraft/VersionFilterData.h"
 

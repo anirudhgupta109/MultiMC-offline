@@ -14,7 +14,6 @@ public:
     virtual ~YggdrasilStep() noexcept;
 
     void perform() override;
-    void rehydrate() override;
 
     QString describe() override;
 
