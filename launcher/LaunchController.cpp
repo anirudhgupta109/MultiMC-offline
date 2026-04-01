@@ -123,6 +123,12 @@ void LaunchController::login() {
         m_session = std::make_shared<AuthSession>();
         m_session->wants_online = m_userWantsOnline;
         m_accountToUse->fillSession(m_session);
+
+        if (m_accountToUse->typeString() == "local" || m_accountToUse->typeString() == "elyby") {
+            launchInstance();
+            return;
+        }
+
         switch(m_accountToUse->accountState()) {
             case AccountState::Offline: {
                 m_session->wants_online = false;
@@ -301,7 +307,7 @@ void LaunchController::launchInstance()
         return;
     }
 
-    m_launcher = m_instance->createLaunchTask(m_session, m_quickPlayTarget);
+    m_launcher = m_instance->createLaunchTask(m_session, m_quickPlayTarget, m_authserver->port());
     if (!m_launcher)
     {
         emitFailed(tr("Couldn't instantiate a launcher."));

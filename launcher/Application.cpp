@@ -48,9 +48,11 @@
 
 #include "InstanceList.h"
 
+#include <minecraft/auth/AuthProviders.h>
 #include <minecraft/auth/AccountList.h>
 #include "icons/IconList.h"
 #include "net/HttpMetaCache.h"
+#include "AuthServer.h"
 
 #include "skins/CapeCache.h"
 #include "skins/SkinsModel.h"
@@ -900,6 +902,16 @@ Application::Application(int &argc, char **argv) : QApplication(argc, argv)
         qDebug() << "<> Instances loaded.";
     }
 
+    {
+        m_authserver.reset(new AuthServer(this));
+        qDebug() << "<> Auth server started.";
+    }
+
+    // load auth providers
+    {
+        AuthProviders::load(m_authserver);
+    }
+
     // and accounts
     {
         m_accounts.reset(new AccountList(this));
@@ -1280,6 +1292,7 @@ bool Application::launch(
         controller->setOnline(online);
         controller->setProfiler(profiler);
         controller->setQuickPlayTarget(quickPlayTarget);
+        controller->setAuthserver(m_authserver);
         controller->setAccountToUse(accountToUse);
         controller->setOfflineName(offlineName);
         if(window)

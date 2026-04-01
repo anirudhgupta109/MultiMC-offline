@@ -9,6 +9,8 @@
 
 #include "AccountsDialog.h"
 #include "ui_AccountsDialog.h"
+#include "LocalLoginDialog.h"
+#include "ElybyLoginDialog.h"
 
 #include "Application.h"
 #include "BuildConfig.h"
@@ -86,6 +88,8 @@ AccountsDialog::AccountsDialog(QWidget *parent, const QString& internalId) : QDi
     connect(ui->refreshButton_Demo, &QPushButton::clicked, this, &AccountsDialog::onRefreshButtonClicked);
 
     connect(ui->getFreshCodeButton, &QPushButton::clicked, this, &AccountsDialog::onGetFreshCodeButtonClicked);
+    connect(ui->addLocalButton, &QPushButton::clicked, this, &AccountsDialog::onAddLocalButtonClicked);
+    connect(ui->addElybyButton, &QPushButton::clicked, this, &AccountsDialog::onAddElybyButtonClicked);
 
     QItemSelectionModel *selectionModel = ui->accountListView->selectionModel();
     bool foundAccount = false;
@@ -512,6 +516,34 @@ void AccountsDialog::startLogin()
     connect(m_loginTask.get(), &AccountTask::showVerificationUriAndCode, this, &AccountsDialog::showVerificationUriAndCode);
     connect(m_loginTask.get(), &AccountTask::hideVerificationUriAndCode, this, &AccountsDialog::hideVerificationUriAndCode);
     m_loginTask->start();
+}
+
+void AccountsDialog::onAddLocalButtonClicked(bool)
+{
+    MinecraftAccountPtr account = LocalLoginDialog::newAccount(this, tr("Please enter your Minecraft username."));
+    if (account)
+    {
+        QModelIndex index = m_accounts->addAccount(account);
+        ui->accountListView->selectionModel()->select(index, selectionFlags);
+        if(!m_accounts->defaultAccount())
+        {
+            m_accounts->setData(index, Qt::Checked, Qt::CheckStateRole);
+        }
+    }
+}
+
+void AccountsDialog::onAddElybyButtonClicked(bool)
+{
+    MinecraftAccountPtr account = ElybyLoginDialog::newAccount(this, tr("Please enter your Ely.by credentials."));
+    if (account)
+    {
+        QModelIndex index = m_accounts->addAccount(account);
+        ui->accountListView->selectionModel()->select(index, selectionFlags);
+        if(!m_accounts->defaultAccount())
+        {
+            m_accounts->setData(index, Qt::Checked, Qt::CheckStateRole);
+        }
+    }
 }
 
 void AccountsDialog::onGetFreshCodeButtonClicked(bool)

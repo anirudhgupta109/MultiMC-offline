@@ -23,10 +23,11 @@
 
 #include "minecraft/launch/LauncherPartLaunch.h"
 #include "minecraft/launch/DirectJavaLaunch.h"
-#include "minecraft/launch/ModMinecraftJar.h"
+#include "minecraft/launch/QuickPlayTarget.h"
 #include "minecraft/launch/ClaimAccount.h"
 #include "minecraft/launch/ReconstructAssets.h"
 #include "minecraft/launch/ScanModFolders.h"
+#include "minecraft/launch/InjectAuthlib.h"
 #include "minecraft/launch/VerifyJavaInstall.h"
 
 #include "java/JavaUtils.h"
@@ -851,7 +852,7 @@ Task::Ptr MinecraftInstance::createUpdateTask(Net::Mode mode)
     return nullptr;
 }
 
-shared_qobject_ptr<LaunchTask> MinecraftInstance::createLaunchTask(AuthSessionPtr session, QuickPlayTargetPtr quickPlayTarget)
+shared_qobject_ptr<LaunchTask> MinecraftInstance::createLaunchTask(AuthSessionPtr session, QuickPlayTargetPtr quickPlayTarget, quint16 localAuthServerPort)
 {
     // FIXME: get rid of shared_from_this ...
     auto process = LaunchTask::create(std::dynamic_pointer_cast<MinecraftInstance>(shared_from_this()));
@@ -955,6 +956,17 @@ shared_qobject_ptr<LaunchTask> MinecraftInstance::createLaunchTask(AuthSessionPt
     // verify that minimum Java requirements are met
     {
         process->appendStep(new VerifyJavaInstall(pptr));
+    }
+
+    {
+        auto acct = APPLICATION->accounts()->defaultAccount();
+        if (acct && acct->provider() && !acct->provider()->injectorEndpoint().isEmpty())
+        {
+            auto step = new InjectAuthlib(pptr, &m_injector);
+            step->setAuthServer(acct->provider()->injectorEndpoint().arg(localAuthServerPort));
+            step->setOfflineMode(session->status == AuthSession::PlayableOffline);
+            process->appendStep(step);
+        }
     }
 
     {

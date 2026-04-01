@@ -1,4 +1,5 @@
 #include "AccountData.h"
+#include "AuthProviders.h"
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
@@ -245,9 +246,25 @@ bool AccountData::resumeStateFromV3(QJsonObject data) {
         return false;
     }
     auto typeS = typeV.toString();
-    if(typeS != "MSA") {
+    if(typeS == "MSA") {
+        type = AccountType::MSA;
+    }
+    else if(typeS == "Mojang") {
+        type = AccountType::Mojang;
+    }
+    else if(typeS == "Local") {
+        type = AccountType::Local;
+    }
+    else if(typeS == "Elyby") {
+        type = AccountType::Elyby;
+    }
+    else {
         qWarning() << "Failed to parse account data: type is not recognized.";
         return false;
+    }
+
+    if(data.contains("provider")) {
+        provider = AuthProviders::lookup(data.value("provider").toString());
     }
 
     msaToken = tokenFromJSONV3(data, "msa");
@@ -271,7 +288,23 @@ bool AccountData::resumeStateFromV3(QJsonObject data) {
 
 QJsonObject AccountData::saveState() const {
     QJsonObject output;
-    output["type"] = "MSA";
+    switch(type) {
+        case AccountType::MSA:
+            output["type"] = "MSA";
+            break;
+        case AccountType::Mojang:
+            output["type"] = "Mojang";
+            break;
+        case AccountType::Local:
+            output["type"] = "Local";
+            break;
+        case AccountType::Elyby:
+            output["type"] = "Elyby";
+            break;
+    }
+    if (provider) {
+        output["provider"] = provider->id();
+    }
     tokenToJSONV3(output, msaToken, "msa");
     tokenToJSONV3(output, userToken, "utoken");
     tokenToJSONV3(output, xboxApiToken, "xrp-main");

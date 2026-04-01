@@ -5,6 +5,8 @@
 #include <katabasis/Bits.h>
 #include <QJsonObject>
 
+#include "providers/BaseAuthProvider.h"
+
 struct Skin {
     QString id;
     QString url;
@@ -36,6 +38,13 @@ struct MinecraftProfile {
     Katabasis::Validity validity = Katabasis::Validity::None;
 };
 
+enum class AccountType {
+    MSA,
+    Mojang,
+    Local,
+    Elyby
+};
+
 enum class AccountState {
     Unchecked,
     Offline,
@@ -50,6 +59,9 @@ enum class AccountState {
 struct AccountData {
     QJsonObject saveState() const;
     bool resumeStateFromV3(QJsonObject data);
+
+    AccountType type = AccountType::MSA;
+    AuthProviderPtr provider;
 
     //! gamertag for MSA
     QString gamerTag() const;

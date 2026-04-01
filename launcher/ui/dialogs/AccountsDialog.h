@@ -113,6 +113,8 @@ private:
     void startLogin();
 
 private slots:
+    void onAddLocalButtonClicked(bool);
+    void onAddElybyButtonClicked(bool);
     void onGetFreshCodeButtonClicked(bool);
     void onQrButtonClicked(bool);
     void onCopyLinkButtonClicked(bool);

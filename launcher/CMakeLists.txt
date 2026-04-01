@@ -8,6 +8,8 @@ include (UnitTest)
 
 set(CORE_SOURCES
     # LOGIC - Base classes and infrastructure
+    AuthServer.h
+    AuthServer.cpp
     BaseInstaller.h
     BaseInstaller.cpp
     BaseVersionList.h
@@ -202,6 +204,8 @@ set(MINECRAFT_SOURCES
     minecraft/auth/AccountList.h
     minecraft/auth/AccountTask.cpp
     minecraft/auth/AccountTask.h
+    minecraft/auth/AuthProviders.cpp
+    minecraft/auth/AuthProviders.h
     minecraft/auth/AuthRequest.cpp
     minecraft/auth/AuthRequest.h
     minecraft/auth/AuthSession.cpp
@@ -212,11 +216,23 @@ set(MINECRAFT_SOURCES
     minecraft/auth/MinecraftAccount.h
     minecraft/auth/Parsers.cpp
     minecraft/auth/Parsers.h
+    minecraft/auth/Yggdrasil.cpp
+    minecraft/auth/Yggdrasil.h
+
+    minecraft/auth/providers/BaseAuthProvider.h
+    minecraft/auth/providers/LocalAuthProvider.h
+    minecraft/auth/providers/ElybyAuthProvider.h
+    minecraft/auth/providers/MojangAuthProvider.h
+    minecraft/auth/providers/MicrosoftAuthProvider.h
 
     minecraft/auth/flows/AuthFlow.cpp
     minecraft/auth/flows/AuthFlow.h
     minecraft/auth/flows/MSA.cpp
     minecraft/auth/flows/MSA.h
+    minecraft/auth/flows/Local.cpp
+    minecraft/auth/flows/Local.h
+    minecraft/auth/flows/Elyby.cpp
+    minecraft/auth/flows/Elyby.h
 
     # Auth steps
     minecraft/auth/steps/EntitlementsStep.cpp
@@ -227,14 +243,20 @@ set(MINECRAFT_SOURCES
     minecraft/auth/steps/LauncherLoginStep.h
     minecraft/auth/steps/MinecraftProfileStep.cpp
     minecraft/auth/steps/MinecraftProfileStep.h
+    minecraft/auth/steps/ElybyProfileStep.cpp
+    minecraft/auth/steps/ElybyProfileStep.h
     minecraft/auth/steps/MSAStep.cpp
     minecraft/auth/steps/MSAStep.h
+    minecraft/auth/steps/LocalStep.cpp
+    minecraft/auth/steps/LocalStep.h
     minecraft/auth/steps/XboxAuthorizationStep.cpp
     minecraft/auth/steps/XboxAuthorizationStep.h
     minecraft/auth/steps/XboxProfileStep.cpp
     minecraft/auth/steps/XboxProfileStep.h
     minecraft/auth/steps/XboxUserStep.cpp
     minecraft/auth/steps/XboxUserStep.h
+    minecraft/auth/steps/YggdrasilStep.cpp
+    minecraft/auth/steps/YggdrasilStep.h
 
     # API call steps
     minecraft/auth/steps/SetSkinStep.cpp
@@ -270,6 +292,8 @@ set(MINECRAFT_SOURCES
     minecraft/launch/LauncherPartLaunch.h
     minecraft/launch/QuickPlayTarget.cpp
     minecraft/launch/QuickPlayTarget.h
+    minecraft/launch/InjectAuthlib.cpp
+    minecraft/launch/InjectAuthlib.h
     minecraft/launch/PrintInstanceInfo.cpp
     minecraft/launch/PrintInstanceInfo.h
     minecraft/launch/ReconstructAssets.cpp
@@ -743,6 +767,10 @@ SET(LAUNCHER_SOURCES
     ui/dialogs/AboutDialog.h
     ui/dialogs/AccountsDialog.cpp
     ui/dialogs/AccountsDialog.h
+    ui/dialogs/ElybyLoginDialog.cpp
+    ui/dialogs/ElybyLoginDialog.h
+    ui/dialogs/LocalLoginDialog.cpp
+    ui/dialogs/LocalLoginDialog.h
     ui/dialogs/ProfileSelectDialog.cpp
     ui/dialogs/ProfileSelectDialog.h
     ui/dialogs/CopyInstanceDialog.cpp
@@ -832,8 +860,10 @@ qt5_wrap_ui(LAUNCHER_UI
     ui/dialogs/AccountsDialog.ui
     ui/dialogs/CopyInstanceDialog.ui
     ui/dialogs/CreateShortcutDialog.ui
+    ui/dialogs/ElybyLoginDialog.ui
     ui/dialogs/ExportInstanceDialog.ui
     ui/dialogs/IconPickerDialog.ui
+    ui/dialogs/LocalLoginDialog.ui
     ui/dialogs/ModrinthExportDialog.ui
     ui/dialogs/NewComponentDialog.ui
     ui/dialogs/NewInstanceDialog.ui

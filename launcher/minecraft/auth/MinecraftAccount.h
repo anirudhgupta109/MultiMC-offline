@@ -72,6 +72,10 @@ public: /* construction */
 
     static MinecraftAccountPtr createBlankMSA();
 
+    static MinecraftAccountPtr createLocal(const QString &username);
+
+    static MinecraftAccountPtr createElyby(const QString &username);
+
     static MinecraftAccountPtr loadFromJsonV3(const QJsonObject &json);
 
     //! Saves a MinecraftAccount to a JSON object and returns it.
@@ -81,6 +85,10 @@ public: /* manipulation */
 
     shared_qobject_ptr<AccountTask> loginMSA();
 
+    shared_qobject_ptr<AccountTask> loginLocal();
+
+    shared_qobject_ptr<AccountTask> loginElyby(const QString &password);
+
     shared_qobject_ptr<AccountTask> refresh();
 
     shared_qobject_ptr<AccountTask> createMinecraftProfile(const QString& profileName);
@@ -88,6 +96,16 @@ public: /* manipulation */
     shared_qobject_ptr<AccountTask> setSkin(Skins::Model model, QByteArray texture, const QString& capeUUID);
 
     shared_qobject_ptr<AccountTask> currentTask();
+
+    void setProvider(AuthProviderPtr provider)
+    {
+        data.provider = provider;
+    }
+
+    AuthProviderPtr provider()
+    {
+        return data.provider;
+    }
 
 public: /* queries */
     QString internalId() const {
@@ -125,7 +143,18 @@ public: /* queries */
     }
 
     QString typeString() const {
-        return "msa";
+        switch(data.type) {
+            case AccountType::MSA:
+                return "msa";
+            case AccountType::Mojang:
+                return "mojang";
+            case AccountType::Local:
+                return "local";
+            case AccountType::Elyby:
+                return "elyby";
+            default:
+                return "unknown";
+        }
     }
 
     QPixmap getFace() const;

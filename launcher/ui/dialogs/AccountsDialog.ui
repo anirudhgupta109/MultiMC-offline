@@ -455,6 +455,24 @@
                 </property>
                </widget>
               </item>
+              <item row="5" column="0" colspan="3">
+               <layout class="QHBoxLayout" name="horizontalLayout_10">
+                <item>
+                 <widget class="QPushButton" name="addLocalButton">
+                  <property name="text">
+                   <string>Add Local</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="addElybyButton">
+                  <property name="text">
+                   <string>Add Ely.by</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
               <item row="2" column="1">
                <widget class="QToolButton" name="copyLinkButton">
                 <property name="sizePolicy">

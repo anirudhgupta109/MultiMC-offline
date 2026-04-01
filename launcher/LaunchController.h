@@ -48,6 +48,10 @@ public:
         m_accountToUse = std::move(accountToUse);
     }
 
+    void setAuthserver(std::shared_ptr<AuthServer> authserver) {
+        m_authserver = authserver;
+    }
+
     QString id()
     {
         return m_instance->id();
@@ -75,6 +79,7 @@ private:
     QWidget * m_parentWidget = nullptr;
     InstanceWindow *m_console = nullptr;
     MinecraftAccountPtr m_accountToUse = nullptr;
+    std::shared_ptr<AuthServer> m_authserver;
     AuthSessionPtr m_session;
     shared_qobject_ptr<LaunchTask> m_launcher;
     QuickPlayTargetPtr m_quickPlayTarget;
